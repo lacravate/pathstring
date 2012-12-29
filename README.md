@@ -26,7 +26,7 @@ gem "pathstring"
 
 ## Use
 
-```
+```ruby
 require 'pathstring'
 
 # path, relative root (optional)

@@ -38,16 +38,17 @@ class Pathstring < String
   end
 
   def initialize(path, relative_path=nil)
+    stringified = path.to_s
     # first arg to String
-    super path
+    super stringified
 
     # set relative origin, with '' as default
     # to allow setting absolute path in any case
     relative_root_with relative_path || ''
-    absolute_with path
+    absolute_with stringified
 
     # if path argument is not absolute, then it's relative...
-    relative_with path if absolute != path
+    relative_with stringified if absolute != stringified
     # if path argument is not set yet and we're given a relative_path argument
     relative_with @absolute.relative_path_from(@relative_root) if !@relative && relative_path
 

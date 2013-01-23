@@ -77,6 +77,41 @@ Pathstring specifics (relative stuff available if a "relative_root" was set) :
  - relative_root : relative paths originate there
  - with_relative_root : (re)set the relative path origin
 
+## PathstringRoot
+
+`pathstring` also provides another small utility class : `PathstringRoot`. It
+is a full-fledge `Pathstring`, look above for the specifics. On top of that, it
+instantiates `Pathstring's` giving itself as relative path, exposing the new
+`Pathstring` with its relative facade. It lists the a `Pathstring` children as
+instances of `Pathstring`.
+
+An example after the highly inedible above sentences :
+```ruby
+require 'pathstring'
+
+root = PathstringRoot.join '/home/me', 'plop'
+readme = root.select('README.md')
+puts readme                       # puts README.md
+puts readme.absolute              # puts '/home/me/plop/README.md'
+puts readme.file?                 # puts true
+
+root.branching('plap') do |element|
+  # custom ls
+  puts "#{element} : #{element.size}" if element.file?
+end
+```
+
+### Elements class
+
+To determine how to cast the elements found, `PathstrinRoot` (or a subclass)
+will look at its name and strip the 'Root' appendix from it.
+`PlopRoot` or `Plip::PlapRoot` would instantiate `Plop` or `Plip::Plap` objects
+respectively.
+
+If the above-mentionned elements classes do not derive from `Pathtstring`, the
+subclassing class would have to overload the `enroot` method (as it sticks too
+much to `Pathstring` so far).
+
 ## Copyright
 
 I was tempted by the WTFPL, but i have to take time to read it.

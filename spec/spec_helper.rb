@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require File.expand_path('../../lib/pathstring.rb', __FILE__)
+require File.expand_path('../../lib/pathstring_root.rb', __FILE__)
 
 RSpec.configure do |config|
   # config from --init

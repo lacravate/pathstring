@@ -87,7 +87,7 @@ instances of `Pathstring`.
 
 An example after the highly inedible above sentences :
 ```ruby
-require 'pathstring'
+require 'pathstring_root'
 
 root = PathstringRoot.join '/home/me', 'plop'
 readme = root.select('README.md')

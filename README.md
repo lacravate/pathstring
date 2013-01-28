@@ -90,6 +90,9 @@ An example after the highly inedible above sentences :
 require 'pathstring_root'
 
 root = PathstringRoot.join '/home/me', 'plop'
+
+puts root.read('README.md')       # puts documentation
+
 readme = root.select('README.md')
 puts readme                       # puts README.md
 puts readme.absolute              # puts '/home/me/plop/README.md'

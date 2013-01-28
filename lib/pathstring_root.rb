@@ -13,7 +13,7 @@ class PathstringRoot < Pathstring
   # Needed to be done here because i
   # really don't want to do it enroot
   def select(path)
-    @last = enroot path
+    @last = enroot path if path
   end
 
   # instantiate with parameter and set the right facade
@@ -29,6 +29,11 @@ class PathstringRoot < Pathstring
     end
   rescue # yeah yeah... i know Errno::ENOTDIR, but i don't care enough
     nil
+  end
+
+  # a little utility method to make PathstringRoot complete
+  def read(path=nil)
+    (select(path) || @last).read rescue nil
   end
 
   private

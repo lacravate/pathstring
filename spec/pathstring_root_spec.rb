@@ -37,4 +37,19 @@ describe PathstringRoot do
     end
   end
 
+  describe 'read' do
+    subject { described_class.new Dir.pwd }
+
+    it "should read files given relative path" do
+      subject.read('lib/pathstring.rb').should == File.read(File.join(Dir.pwd, 'lib', 'pathstring.rb'))
+      subject.read.should == File.read(File.join(Dir.pwd, 'lib', 'pathstring.rb'))
+    end
+
+    it "should not crash when ask to read non-existing files" do
+      subject.read.should be_nil
+      subject.read('lib/pathstrings').should be_nil
+      subject.read.should be_nil
+    end
+  end
+
 end

@@ -7,7 +7,7 @@ class PathstringRoot < Pathstring
   # last selected element
   attr_reader :last
 
-  attr_writer :element_class # ?
+  attr_writer :branching_class
 
   # Useful memoize.
   # Needed to be done here because i
@@ -18,7 +18,7 @@ class PathstringRoot < Pathstring
 
   # instantiate with parameter and set the right facade
   def enroot(path)
-    element_class.new(path, self).tap { |e| e.relative! }
+    branching_class.new(path, self).tap { |e| e.relative! }
   end
 
   # list of an element's children as instances of the
@@ -38,11 +38,11 @@ class PathstringRoot < Pathstring
 
   private
 
-  def element_class
+  def branching_class
     # inject is a funny way to do recursive stuff
     # (here to find a constant starting from Object)
     # Plip::Plap::PlopRoot will instantiate Plip::Plap::Plop objects
-    @element_class ||= self.class.name.sub(/Root$/, '').split('::').inject(Object) do |constant, chunk|
+    @branching_class ||= self.class.name.sub(/Root$/, '').split('::').inject(Object) do |constant, chunk|
       constant = constant.const_get chunk
     end
   end

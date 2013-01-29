@@ -105,12 +105,14 @@ root.branching('plap') do |element|
 end
 ```
 
-### Elements class
+### Branching class
 
 To determine how to cast the elements found, `PathstrinRoot` (or a subclass)
 will look at its name and strip the 'Root' appendix from it.
 `PlopRoot` or `Plip::PlapRoot` would instantiate `Plop` or `Plip::Plap` objects
 respectively.
+
+There is also an attribute writer `branching_class` to set it explicitly.
 
 If the above-mentionned elements classes do not derive from `Pathtstring`, the
 subclassing class would have to overload the `enroot` method (as it sticks too

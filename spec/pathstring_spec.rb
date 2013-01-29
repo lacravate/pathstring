@@ -69,7 +69,7 @@ describe Pathstring do
     
     p.relative!.should be_nil
 
-    p.with_relative_root File.join(Dir.pwd, 'spec')
+    p.with_relative_root(Dir.pwd, 'spec')
 
     p.relative!.should == File.join('plop', 'plap')
   end

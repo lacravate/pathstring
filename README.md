@@ -35,6 +35,7 @@ f = Pathstring.new '/home/me/my_project/LICENSE', Dir.home
 
 # same as
 f = Pathstring.join(Dir.pwd, 'LICENSE').with_relative_root(Dir.home)
+# with_relative_root accepts a list of arguments on which it does a File.join
 
 puts f # => '/home/me/my_project/LICENSE'
 

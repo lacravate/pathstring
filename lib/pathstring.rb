@@ -58,11 +58,11 @@ class Pathstring < String
 
   # (re)set the relative origin
   # set the relative facade in the process
-  def with_relative_root(root)
+  def with_relative_root(*root)
     # Tap because i like tap
     # No, tap because i want this to be chainable with `new` for example
     tap do |p|
-      relative_root_with root
+      relative_root_with File.join(root)
       relative_with @absolute.relative_path_from(@relative_root)
     end
   end

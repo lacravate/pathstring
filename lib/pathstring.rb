@@ -20,7 +20,7 @@ class Pathstring < String
 
   # and that again
   def_delegators :@absolute, :exist?, :file?, :basename, :extname, :join, :split,
-                             :size, :stat, :children, :delete, :readlines, :open
+                             :size, :stat, :children, :delete, :readlines
 
   # three interfaces
   peddles Pathname
@@ -91,14 +91,18 @@ class Pathstring < String
   # save file content, if we have a content and if the dirname path exists
   def save(content=nil)
     @content = content if content
-    open('w') { |f| f.write @content } if dirname.exist? && !@content.nil?
+    open { |f| f.write @content } if dirname.exist? && !@content.nil?
   end
 
-  # save file content if we have a content, 
+  # save file content if we have a content,
   # but forces the dirname creation if it doesn't exist
   def save!(content=nil)
     FileUtils.mkdir_p dirname
     save content || read
+  end
+
+  def open(mode=nil)
+    @absolute.open(mode || 'w') { |f| yield f if block_given? }
   end
 
   # man ruby

@@ -29,7 +29,7 @@ describe Pathstring do
 
   describe 'rename' do
     it "should rename file to new name and set the instance internals right" do
-      # rename to a file name of which some elements of the path don't exist 
+      # rename to a file name of which some elements of the path don't exist
       subject.rename File.join('baz', 'plip', 'ploup')
 
       # instance changed its name
@@ -66,7 +66,7 @@ describe Pathstring do
 
   it "can set relative facade after initialize" do
     p = described_class.join Dir.pwd, 'spec', 'plop', 'plap'
-    
+
     p.relative!.should be_nil
 
     p.with_relative_root(Dir.pwd, 'spec')
@@ -76,31 +76,29 @@ describe Pathstring do
 
   describe 'save' do
     it "should be able to save the file contents" do
-      subject.save.should be_nil
-
-      FileUtils.mkdir_p subject.dirname
-      subject.save.should be_nil
-
       # pathstring path doesn't exist. No can't do.
       subject.save.should be_nil
 
-      
       # we create the dirname path
       FileUtils.mkdir_p subject.dirname
-      # no content. saves nothing.
-      subject.save.should be_nil
+      # no content. that's a touch.
+      subject.save.should be_true
 
       # save is succesfull with path and content
       subject.content = 'plaup'
       subject.save.should be_true
       subject.save('plawp').should be_true
+      File.read(subject).should == 'plawp'
     end
   end
 
   describe 'save!' do
     it "should be able to save the file contents" do
-      subject.save!.should be_nil
+      subject.exist?.should be_false
+      # touch
+      subject.save!.should be_true
       subject.save!('bim!').should be_true
+      File.read(subject).should == 'bim!'
     end
   end
 
@@ -145,20 +143,6 @@ describe Pathstring do
         subject.should == File.join('spec', 'plop', 'plap')
         subject.dirname.to_s.should == File.join('spec', 'plop')
       end
-    end
-  end
-
-  describe 'save!' do
-    it "should be able to save the file contents even though elements of the path don't exist" do
-      # no content, even save! can't do anything against that
-      subject.save!.should be_nil
-
-      subject.content = 'plaup'
-
-      # save! creates dirname path before saving
-      # save! is succesfull with content
-      subject.save!.should be_true
-      subject.save!('plawp').should be_true
     end
   end
 

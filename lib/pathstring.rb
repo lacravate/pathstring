@@ -88,14 +88,14 @@ class Pathstring < String
     replace new_name
   end
 
-  # save file content, if we have a content and if the dirname path exists
+  # save file content, if the dirname path exists
   def save(content=nil)
     @content = content if content
-    open { |f| f.write @content } if dirname.exist? && !@content.nil?
+    open { |f| f.write @content || '' } if dirname.exist?
   end
 
-  # save file content if we have a content,
-  # but forces the dirname creation if it doesn't exist
+  # save file content
+  # forces the dirname creation if it doesn't exist
   def save!(content=nil)
     FileUtils.mkdir_p dirname
     save content || read

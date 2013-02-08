@@ -91,13 +91,13 @@ class Pathstring < String
   # save file content, if the dirname path exists
   def save(content=nil)
     @content = content if content
-    open { |f| f.write @content || '' } if dirname.exist?
+    open { |f| f.write @content || '' } if absolute_dirname.exist?
   end
 
   # save file content
   # forces the dirname creation if it doesn't exist
   def save!(content=nil)
-    FileUtils.mkdir_p dirname
+    FileUtils.mkdir_p absolute_dirname
     save content || read
   end
 

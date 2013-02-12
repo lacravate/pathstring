@@ -19,8 +19,9 @@ class Pathstring < String
   def_delegators  :facade_delegate, :dirname, :absolute?, :relative?
 
   # and that again
-  def_delegators :@absolute, :exist?, :file?, :basename, :extname, :join, :split,
-                             :size, :stat, :children, :delete, :readlines
+  def_delegators :@absolute, :exist?, :file?, :directory?,
+                             :basename, :extname, :join, :split, :size,
+                             :stat, :children, :delete, :readlines
 
   # three interfaces
   peddles Pathname

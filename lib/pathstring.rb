@@ -20,7 +20,7 @@ class Pathstring < String
 
   # and that again
   def_delegators :@absolute, :exist?, :file?, :directory?,
-                             :basename, :extname, :join, :split, :size,
+                             :basename, :extname, :size,
                              :stat, :children, :delete, :readlines
 
   # three interfaces
@@ -57,6 +57,25 @@ class Pathstring < String
     pathstring_specifics
   end
 
+  # definitions of relative! and absolute! that allow to swith facades
+  %w|absolute relative|.each do |face|
+    define_method "#{face}!".to_sym do
+      instance_variable_get("@#{face}") && replace(send(face))
+    end
+  end
+
+  #
+
+  def join(*args)
+    self.class.join self, *args
+  end
+
+  def split
+    facade_delegate.split.map { |p| self.class.new p }
+  end
+
+  #
+
   # (re)set the relative origin
   # set the relative facade in the process
   def with_relative_root(*root)
@@ -65,13 +84,6 @@ class Pathstring < String
     tap do |p|
       relative_root_with File.join(root)
       relative_with @absolute.relative_path_from(@relative_root)
-    end
-  end
-
-  # definitions of relative! and absolute! that allow to swith facades
-  %w|absolute relative|.each do |face|
-    define_method "#{face}!".to_sym do
-      instance_variable_get("@#{face}") && replace(send(face))
     end
   end
 

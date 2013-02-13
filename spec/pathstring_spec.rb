@@ -102,6 +102,24 @@ describe Pathstring do
     end
   end
 
+  describe "Pathstring in-breeding" do
+    describe "join" do
+      it "should craft a path after the fashion of Pathname but as a Pathstring instance" do
+        subject.join('bim').should be_an_instance_of Pathstring
+        subject.join('bim').should == subject + '/bim'
+      end
+    end
+
+    describe "split" do
+      it "should split a path after the fashion of Pathname but as a Pathstring instance" do
+        subject.split[0].should be_an_instance_of Pathstring
+        subject.split[0].should == subject.dirstring
+        subject.split[1].should be_an_instance_of Pathstring
+        subject.split[1].should == subject.basestring
+      end
+    end
+  end
+
   describe 'dirname' do
     let(:absolute_relative_specs) {
       subject.absolute.should == File.join(Dir.pwd, 'spec', 'plop', 'plap')

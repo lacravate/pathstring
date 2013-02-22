@@ -87,6 +87,7 @@ describe Pathstring do
       # save is succesfull with path and content
       subject.content = 'plaup'
       subject.save.should be_true
+      File.read(subject).should == 'plaup'
       subject.save('plawp').should be_true
       File.read(subject).should == 'plawp'
     end

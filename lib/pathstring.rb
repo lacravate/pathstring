@@ -24,13 +24,11 @@ class Pathstring < String
                              :stat, :children, :delete, :readlines
 
   # three interfaces
-  peddles Pathname
-  pathname_accessor :relative_root
-  pathname_writer :absolute
-  pathname_writer :relative
+  peddles Pathname, accessor: [:relative_root],
+                    writer:   [:absolute, :relative]
 
   # only writer, getter is implicitly defined within the read method
-  attr_writer :content
+  attr_accessor :content
 
   # one utility class method, allows to instantiate a Pathstring with
   # a path elements list
@@ -101,25 +99,17 @@ class Pathstring < String
     replace new_name
   end
 
-  # save file content, if the dirname path exists
-  def save(content=nil)
-    @content = content if content
-    open { |f| f.write @content || '' } if absolute_dirname.exist?
-  end
-
-  # save file content
-  # forces the dirname creation if it doesn't exist
-  def save!(content=nil)
-    FileUtils.mkdir_p absolute_dirname
-    save content || read
+  [:save, :save!].each do |meth|
+    define_method meth do |*data|
+      FileUtils.mkdir_p absolute_dirname if __method__.to_s.end_with? '!'
+      @content = data.first if data.any?
+      open { |f| f.write(@content || read) } if absolute_dirname.exist?
+    end
   end
 
   def open(mode=nil)
     @absolute.open(mode || 'w') { |f| yield f if block_given? }
   end
-
-  # man ruby
-  alias :content :read
 
   private
 

@@ -99,13 +99,16 @@ class Pathstring < String
     replace new_name
   end
 
-  [:save, :save!].each do |meth|
-    define_method meth do |*data|
-      FileUtils.mkdir_p absolute_dirname if __method__.to_s.end_with? '!'
-      @content = data.first if data.any?
-      open { |f| f.write(@content || read) } if absolute_dirname.exist?
-    end
+  def persist(*data)
+    @content = data.first if data.any?
+    open { |f| f.write(@content || read) } if absolute_dirname.exist?
   end
+
+  def save!(*data)
+    FileUtils.mkdir_p absolute_dirname
+    persist *data
+  end
+  alias :save :persist
 
   def open(mode=nil)
     @absolute.open(mode || 'w') { |f| yield f if block_given? }

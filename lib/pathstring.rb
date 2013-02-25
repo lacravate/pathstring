@@ -30,6 +30,8 @@ class Pathstring < String
   # only writer, getter is implicitly defined within the read method
   attr_accessor :content
 
+  attr_reader :root
+
   # one utility class method, allows to instantiate a Pathstring with
   # a path elements list
   def self.join(*joins)
@@ -38,6 +40,10 @@ class Pathstring < String
 
   def initialize(path, relative_path=nil)
     stringified = path.to_s
+    # in case relative_path is PathstringRoot subclass
+    # it always becomes needy somehow to know who's your daddy
+    @root = relative_path
+
     # first arg to String
     super stringified
 

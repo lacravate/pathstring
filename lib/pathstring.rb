@@ -105,22 +105,25 @@ class Pathstring < String
     replace new_name
   end
 
-  def persist(*data)
-    @content = data.first if data.any?
-    open { |f| f.write(@content || read) } if absolute_dirname.exist?
+  def save(*data)
+    persist *data
   end
 
   def save!(*data)
     FileUtils.mkdir_p absolute_dirname
     persist *data
   end
-  alias :save :persist
 
   def open(mode=nil)
     @absolute.open(mode || 'w') { |f| yield f if block_given? }
   end
 
   private
+
+  def persist(*data)
+    @content = data.first if data.any?
+    open { |f| f.write(@content || read) } if absolute_dirname.exist?
+  end
 
   # fitting setter method for abolute resource
   def absolute_setter(path)

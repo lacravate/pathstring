@@ -114,6 +114,14 @@ class Pathstring < String
     persist *data
   end
 
+  def mkdir
+    FileUtils.mkdir absolute rescue nil
+  end
+
+  def mkdir!
+    FileUtils.mkdir_p absolute
+  end
+
   def open(mode=nil)
     @absolute.open(mode || 'w') { |f| yield f if block_given? }
   end

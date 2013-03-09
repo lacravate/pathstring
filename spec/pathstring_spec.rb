@@ -103,6 +103,22 @@ describe Pathstring do
     end
   end
 
+  describe 'mkdir' do
+    it "should create a subdir to an already existing directory" do
+      subject.mkdir.should be_nil
+
+      FileUtils.mkdir_p subject.dirstring
+
+      subject.mkdir.should be_true
+      File.exist?(subject).should be_true
+    end
+
+    it "should create a subdir the `mkdir -p` way" do
+      subject.mkdir!.should be_true
+      File.exist?(subject).should be_true
+    end
+  end
+
   describe "Pathstring in-breeding" do
     describe "join" do
       it "should craft a path after the fashion of Pathname but as a Pathstring instance" do

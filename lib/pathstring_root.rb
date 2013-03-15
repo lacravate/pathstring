@@ -24,7 +24,9 @@ class PathstringRoot < Pathstring
   # list of an element's children as instances of the
   # elements class
   def branching(path=nil)
-    join(path || @last || '').children.sort.map do |cell|
+    join(path || @last || '').children.select { |child| child.directory? }.sort.concat(
+      join(path || @last || '').children.select { |child| child.file? }.sort
+    ).flatten.map do |cell|
       enroot(cell).tap { |c| yield c if block_given? }
     end
   rescue # yeah yeah... i know Errno::ENOTDIR, but i don't care enough

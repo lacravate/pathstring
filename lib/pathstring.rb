@@ -72,25 +72,12 @@ class Pathstring < PathstringInterface
     open { |f| f.write(@content || read) } if absolute_dirname.exist?
   end
 
-  # fitting setter method for abolute resource
-  def absolute_setter(path)
-    relative_root.join(path).expand_path
+  def foster(path)
+    self.class.new path, relative_root.send(path_facade(path))
   end
 
-  # is the current facade absolute or relative ?
-  def facade_delegate
-    absolute == self ? @absolute : @relative
-  end
-
-  # Pathstring specific methode definitions
-  def pathstring_specifics
-    # anything that's called *basename* or *dirname* will have
-    # its basestring or dirstring couterpart
-    methods.grep(/basename|dirname/).each do |method|
-      define_singleton_method method.to_s.sub('name', 'string').to_sym do
-        (pathname = send method) && pathname.to_s
-      end
-    end
+  def path_facade(path)
+    (Pathname.new(path).absolute? && 'absolute') || 'relative'
   end
 
 end

@@ -1,44 +1,22 @@
 # encoding: utf-8
 
-require 'pedlar'
+require 'pathstring_interface'
+require 'pathstring_root'
 
 # we want a string, a little bit more intelligent though, so...
-class Pathstring < String
+class Pathstring < PathstringInterface
 
-  # delegations
-  extend Pedlar
+  # a little more borrowing from Forwardable
+  def_delegators :@absolute, :file?, :directory?, :extname, :size, :readlines
 
-  # what we shamelessly steal from Pathname
-  def_delegator  :@absolute, :to_s, :absolute
-  def_delegator  :@absolute, :dirname, :absolute_dirname
-  # here with a failsafe thanks to Pedlar
-  safe_delegator :@relative, :to_s, :relative
-  safe_delegator :@relative, :dirname, :relative_dirname
-
-  # and even more
-  def_delegators  :facade_delegate, :dirname, :absolute?, :relative?
-
-  # and that again
-  def_delegators :@absolute, :exist?, :file?, :directory?,
-                             :basename, :extname, :size,
-                             :stat, :children, :delete, :readlines
-
-  # three interfaces
-  peddles Pathname, accessor: [:relative_root],
-                    writer:   [:absolute, :relative]
+  # relying on our own now
+  peddles PathstringRoot, accessor: [:relative_root]
 
   # only writer, getter is implicitly defined within the read method
   attr_accessor :content
 
-  attr_reader :root
-
-  # one utility class method, allows to instantiate a Pathstring with
-  # a path elements list
-  def self.join(*joins)
-    new File.join(*joins)
-  end
-
   def initialize(path, relative_path=nil)
+    super
     stringified = path.to_s
     # in case relative_path is PathstringRoot subclass
     # it always becomes needy somehow to know who's your daddy
@@ -50,35 +28,12 @@ class Pathstring < String
     # set relative origin, with '' as default
     # to allow setting absolute path in any case
     relative_root_with relative_path || ''
-    absolute_with stringified
 
     # if path argument is not absolute, then it's relative...
     relative_with stringified if absolute != stringified
     # if path argument is not set yet and we're given a relative_path argument
     relative_with @absolute.relative_path_from(@relative_root) if !@relative && relative_path
-
-    # Pathstring specific methods definitions
-    pathstring_specifics
   end
-
-  # definitions of relative! and absolute! that allow to swith facades
-  %w|absolute relative|.each do |face|
-    define_method "#{face}!".to_sym do
-      instance_variable_get("@#{face}") && replace(send(face))
-    end
-  end
-
-  #
-
-  def join(*args)
-    self.class.join self, *args
-  end
-
-  def split
-    facade_delegate.split.map { |p| self.class.new p }
-  end
-
-  #
 
   # (re)set the relative origin
   # set the relative facade in the process
@@ -112,14 +67,6 @@ class Pathstring < String
   def save!(*data)
     FileUtils.mkdir_p absolute_dirname
     persist *data
-  end
-
-  def mkdir
-    FileUtils.mkdir absolute rescue nil
-  end
-
-  def mkdir!
-    FileUtils.mkdir_p absolute
   end
 
   def open(mode=nil)

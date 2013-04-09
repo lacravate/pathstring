@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-require 'pathstring'
+require 'pathstring_interface'
 
-class PathstringRoot < Pathstring
+class PathstringRoot < PathstringInterface
 
   # last selected element
   attr_reader :last
@@ -50,4 +50,3 @@ class PathstringRoot < Pathstring
   end
 
 end
-

@@ -18,15 +18,6 @@ class Pathstring < PathstringInterface
   def initialize(path, relative_path=nil)
     super
     stringified = path.to_s
-    # in case relative_path is PathstringRoot subclass
-    # it always becomes needy somehow to know who's your daddy
-    @root = relative_path
-
-    # first arg to String
-    super stringified
-
-    # set relative origin, with '' as default
-    # to allow setting absolute path in any case
     relative_root_with relative_path || ''
 
     # if path argument is not absolute, then it's relative...
@@ -43,6 +34,7 @@ class Pathstring < PathstringInterface
     tap do |p|
       relative_root_with File.join(root)
       relative_with @absolute.relative_path_from(@relative_root)
+      absolute? || replace(self, relative)
     end
   end
 
@@ -56,7 +48,7 @@ class Pathstring < PathstringInterface
   # to return apt values to basename or dirname for instance
   def rename(new_name)
     relative_with new_name.sub(@relative_root.to_s, '')
-    absolute_with @relative
+    absolute_with @relative_root, @relative
     replace new_name
   end
 

@@ -62,7 +62,12 @@ class Pathstring < PathstringInterface
   end
 
   def open(mode=nil)
-    @absolute.open(mode || 'w') { |f| yield f if block_given? }
+    File.new(@absolute, mode || 'w').tap do |f|
+      if block_given?
+        yield f
+        f.close
+      end
+    end
   end
 
   private

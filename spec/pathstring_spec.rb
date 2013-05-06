@@ -12,6 +12,12 @@ describe Pathstring do
     end
   end
 
+  describe 'new with array' do
+    it "creates a Pathstring instance with first argument as a paths list to join" do
+      described_class.new(['spec', 'plop', 'plap']).should == subject
+    end
+  end
+
   describe 'read' do
     it "should be able to read the file content and fill its content attribute" do
       # no content => read doesn't crash and returns nil

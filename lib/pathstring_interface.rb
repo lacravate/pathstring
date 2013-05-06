@@ -32,8 +32,9 @@ class PathstringInterface < String
   #
 
   def initialize(path, relative_path=nil)
-    stringified = path.to_s
-    # first arg to String
+    # first arg to String more or less shrewdly
+    stringified = path.instance_of?(Array) ? File.join(path) : path.to_s
+
     super stringified
 
     absolute_with relative_path || '', stringified

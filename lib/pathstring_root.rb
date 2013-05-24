@@ -23,14 +23,32 @@ class PathstringRoot < PathstringInterface
 
   # list of an element's children as instances of the
   # elements class
-  def branching(path=nil)
-    join(path || @last || '').children.select { |child| child.directory? }.sort.concat(
-      join(path || @last || '').children.select { |child| child.file? }.sort
-    ).flatten.map do |cell|
+  def branching(path=nil, type=nil)
+    branchings(path, type).map do |cell|
       enroot(cell).tap { |c| yield c if block_given? }
     end
   rescue # yeah yeah... i know Errno::ENOTDIR, but i don't care enough
     nil
+  end
+
+  def branchings(path, type)
+    if type
+      join(path || @last || '').children.select { |child| child.send "#{type}?" }.sort
+    else
+      join(path || @last || '').children.inject([[],[]]) { |h, c|
+        h.tap do |plop|
+          (h.send(c.file? ? 'last' : 'first') << c).sort!
+        end
+      }.flatten
+    end
+  end
+
+  { leaf: 'file', wire: 'directory' }.each do |prefix, type|
+    define_method "#{prefix}_branching".to_sym do |*args, &block|
+      branching(args.first, type) do |cell|
+        block.call(cell) unless block.nil?
+      end
+    end
   end
 
   # a little utility method to make PathstringRoot complete

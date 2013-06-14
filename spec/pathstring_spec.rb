@@ -16,6 +16,11 @@ describe Pathstring do
     it "creates a Pathstring instance with first argument as a paths list to join" do
       described_class.new(['spec', 'plop', 'plap']).should == subject
     end
+
+    it "accepts any arguments as long as they respond to 'to_s'" do
+      described_class.new(['spec', 'plop', 2, { a: 1 }]).should == "spec/plop/2/{:a=>1}"
+    end
+
   end
 
   describe 'read' do

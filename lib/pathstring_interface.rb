@@ -21,7 +21,7 @@ class PathstringInterface < String
   def_delegators :@absolute, :exist?, :basename, :stat, :children, :delete
 
   # two Pathname interfaces
-  peddles Pathname, writer: [:absolute, :relative]
+  peddles Pathname, writers: [:absolute, :relative]
 
   # one utility class method, allows to instantiate a Pathstring with
   # a path elements list

@@ -10,7 +10,7 @@ class Pathstring < PathstringInterface
   def_delegators :@absolute, :file?, :directory?, :extname, :size, :readlines
 
   # relying on our own now
-  peddles PathstringRoot, accessor: [:relative_root]
+  peddles PathstringRoot, accessors: [:relative_root]
 
   # only writer, getter is implicitly defined within the read method
   attr_accessor :content

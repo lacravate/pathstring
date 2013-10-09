@@ -31,9 +31,13 @@ class PathstringRoot < PathstringInterface
     nil
   end
 
+  # directory contents
+  # that's... not pretty
   def branchings(path, type)
+    # filter on wire or leaf, sorted list
     if type
       join(path || @last || '').children.select { |child| child.send "#{type}?" }.sort
+    # no filter, yet all wires sorted out first, then all leaves sorted out as well
     else
       join(path || @last || '').children.inject([[],[]]) { |h, c|
         h.tap do |plop|
@@ -43,6 +47,8 @@ class PathstringRoot < PathstringInterface
     end
   end
 
+  # i love meta !
+  # wire_branching and leaf_branching definitions
   { leaf: 'file', wire: 'directory' }.each do |prefix, type|
     define_method "#{prefix}_branching".to_sym do |*args, &block|
       branching(args.first, type) do |cell|

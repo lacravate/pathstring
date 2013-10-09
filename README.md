@@ -53,8 +53,9 @@ f.save
 ```
 
 Pathstring behaves like a String but it knows from `Pathname` :
- - delegated : basename, extname, join, dirname, children, delete, exist?,
-               readlines, size, split, stat, :file?, :absolute?, :relative?
+ - delegated : file?, directory?, extname, size, readlines
+               dirname, absolute?, relative?, cleanpath
+               exist?, basename, stat, children, delete
 
  - delegated and post-processed :
   - basestring (basename to string)
@@ -66,7 +67,10 @@ With the help of Pathname but custom-made :
  - content= : sets file content
  - save : saves to file if content is set and file path exists
  - save! : saves to file, loading content if need be, creates path if need be
+ - mkdir : create a folder after the pathstring content if parent dir exists
+ - mkdir! : create a folder after the pathstring, creates all path elements if need be
  - rename : self-explicit (does not save file though)
+ - open : default mode is 'w' (if you need to read, the `read`)
 
 Pathstring specifics (relative stuff available if a "relative_root" was set) :
  - relative! : switches to relative facade
@@ -94,15 +98,24 @@ root = PathstringRoot.join '/home/me', 'plop'
 
 puts root.read('README.md')       # puts documentation
 
-readme = root.select('README.md')
+readme = root.enroot('README.md')
 puts readme                       # puts README.md
 puts readme.absolute              # puts '/home/me/plop/README.md'
 puts readme.file?                 # puts true
+
+readme = root.select('plap') # same as enroot but memoizes readme
+                                  # for futher use
 
 root.branching('plap') do |element|
   # custom ls
   puts "#{element} : #{element.size}" if element.file?
 end
+
+# but thanks to `select`, `root.branching do |element|` would have done the same
+
+root.wire_branching # same a branching, filter on directories
+root.leaf_branching # same a branching, filter on files
+
 ```
 
 ### Branching class

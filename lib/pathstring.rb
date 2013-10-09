@@ -52,15 +52,24 @@ class Pathstring < PathstringInterface
     replace new_name
   end
 
+  # common gateway to persistence
+  # persist being the implementation
+  # performs if parent dir exists
   def save(*data)
     persist *data
   end
 
+  # common gateway to persistence
+  # persist being the implementation
+  # mkdir -p on parent dir
   def save!(*data)
     FileUtils.mkdir_p absolute_dirname
     persist *data
   end
 
+  # DWIM open
+  # default mode is 'w'
+  # if you need to read, then `read`
   def open(mode=nil)
     File.new(@absolute, mode || 'w').tap do |f|
       if block_given?
@@ -72,15 +81,19 @@ class Pathstring < PathstringInterface
 
   private
 
+  # here persistence is simply saving
+  # content to file
   def persist(*data)
     @content = data.first if data.any?
     open { |f| f.write(@content || read) } if absolute_dirname.exist?
   end
 
+  # allows instance to instantiate sister instances
   def foster(path)
     self.class.new path, relative_root.send(path_facade(path))
   end
 
+  # facade is relative or absolute ?
   def path_facade(path)
     (Pathname.new(path).absolute? && 'absolute') || 'relative'
   end

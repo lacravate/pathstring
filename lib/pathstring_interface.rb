@@ -45,10 +45,12 @@ class PathstringInterface < String
 
   #
 
+  # DWIM join
   def join(*args)
     self.class.join self, *args
   end
 
+  # Mmmh... noy sure about that one...
   def split
     facade_delegate.split.map { |p| foster p }
   end
@@ -62,10 +64,13 @@ class PathstringInterface < String
     end
   end
 
+  # mkdir if parent dir exists
+  # maybe a little loose on failure
   def mkdir
     FileUtils.mkdir absolute rescue nil
   end
 
+  # mkdir -p
   def mkdir!
     FileUtils.mkdir_p absolute
   end
